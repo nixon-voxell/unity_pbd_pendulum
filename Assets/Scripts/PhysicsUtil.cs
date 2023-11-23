@@ -33,10 +33,10 @@ public static class PhysicsUtil
         position += velocity * deltaTime;
     }
 
-    public static float3 CalculateVelocity(float3 displacement, float deltaTime)
+    public static void CalculateVelocity(ref float3 velocity, float3 displacement, float deltaTime)
     {
         // v = d/t
-        return displacement / deltaTime;
+        velocity = displacement / deltaTime;
     }
 
     public static void DistanceConstraintPBD(
@@ -66,7 +66,7 @@ public static class PhysicsUtil
         // Apply the position correction based on inverse mass
         // The smaller the inverse mass, the lesser it is being effected
         // Infinite mass can be denoted using 0 as the invMass
-        position0 += direction * distanceCorrection * invMass0 / invMassSum;
-        position1 -= direction * distanceCorrection * invMass1 / invMassSum;
+        position0 += strength * direction * distanceCorrection * invMass0 / invMassSum;
+        position1 -= strength * direction * distanceCorrection * invMass1 / invMassSum;
     }
 }

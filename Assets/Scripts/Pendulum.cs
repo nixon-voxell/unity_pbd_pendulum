@@ -3,8 +3,12 @@ using Unity.Mathematics;
 
 public class Pendulum : MonoBehaviour
 {
+    [SerializeField] private float3 m_Gravity;
     [SerializeField] private float m_Distance;
-    [SerializeField] private Transform[] m_Transforms;
+    [SerializeField, Range(0.0f, 1.0f)] private float m_Strength = 1.0f;
+    [SerializeField] private Particle[] m_Particles;
+
+    private int[] m_Edges;
 
     // Apply force
     // Apply gravity
@@ -12,13 +16,87 @@ public class Pendulum : MonoBehaviour
     // Calculate velocity
     // Apply damping
 
-    // Start is called before the first frame update
     private void Start()
     {
+        int edgeCount = this.m_Particles.Length - 1;
+        this.m_Edges = new int[edgeCount * 2];
+
+        for (int e = 0; e < edgeCount; e++)
+        {
+            int edgeIndex = e * 2;
+            this.m_Edges[edgeIndex] = e;
+            this.m_Edges[edgeIndex + 1] = e + 1;
+        }
     }
 
-    // Update is called once per frame
     private void Update()
     {
+        // Special case for the first particle as we want to control it
+        this.m_Particles[0].ParticleData.Position = this.m_Particles[0].transform.position;
+        this.m_Particles[0].ParticleData.PredPosition = this.m_Particles[0].ParticleData.Position;
+
+        for (int p = 1; p < this.m_Particles.Length; p++)
+        {
+            ParticleData particleData = this.m_Particles[p].ParticleData;
+
+            // Apply gravity
+            if (particleData.InvMass > 0.0f)
+            {
+                PhysicsUtil.ApplyAcceleration(
+                    ref particleData.Velocity,
+                    this.m_Gravity,
+                    Time.deltaTime
+                );
+            }
+
+            PhysicsUtil.ApplyVelocity(
+                ref particleData.PredPosition,
+                particleData.Velocity,
+                Time.deltaTime
+            );
+
+            // Update particle
+            this.m_Particles[p].ParticleData = particleData;
+        }
+
+        int edgeCount = this.m_Edges.Length / 2;
+
+        for (int e = 0; e < edgeCount; e++)
+        {
+            int edgeIndex = e * 2;
+            int p0Index = this.m_Edges[edgeIndex];
+            int p1Index = this.m_Edges[edgeIndex + 1];
+
+            ParticleData particleData0 = this.m_Particles[p0Index].ParticleData;
+            ParticleData particleData1 = this.m_Particles[p1Index].ParticleData;
+
+            PhysicsUtil.DistanceConstraintPBD(
+                ref particleData0.PredPosition, particleData0.InvMass,
+                ref particleData1.PredPosition, particleData1.InvMass,
+                this.m_Distance, this.m_Strength
+            );
+
+            // Update particle
+            this.m_Particles[p0Index].ParticleData = particleData0;
+            this.m_Particles[p1Index].ParticleData = particleData1;
+        }
+
+        for (int p = 1; p < this.m_Particles.Length; p++)
+        {
+            ParticleData particleData = this.m_Particles[p].ParticleData;
+
+            // Calculate velocity
+            PhysicsUtil.CalculateVelocity(
+                ref particleData.Velocity,
+                particleData.PredPosition - particleData.Position,
+                Time.deltaTime
+            );
+
+            // Update current particle position to the predicted position
+            particleData.Position = particleData.PredPosition;
+
+            // Update particle
+            this.m_Particles[p].ParticleData = particleData;
+        }
     }
 }
