@@ -9,7 +9,7 @@ public static class PhysicsUtil
     // v: velocity
     // d: displacement
 
-    private static void ApplyForce(ref float3 velocity, float3 invMass, float3 force, float deltaTime)
+    public static void ApplyForce(ref float3 velocity, float3 invMass, float3 force, float deltaTime)
     {
         // F = m*a
         // a = F/m
@@ -19,27 +19,27 @@ public static class PhysicsUtil
         velocity += acceleration * deltaTime;
     }
 
-    private static void ApplyAcceleration(ref float3 velocity, float3 acceleration, float deltaTime)
+    public static void ApplyAcceleration(ref float3 velocity, float3 acceleration, float deltaTime)
     {
         // a = v/t
         // v = a*t
         velocity += acceleration * deltaTime;
     }
 
-    private static void ApplyVelocity(ref float3 position, float3 velocity, float deltaTime)
+    public static void ApplyVelocity(ref float3 position, float3 velocity, float deltaTime)
     {
         // v = d/t
         // d = v*t
         position += velocity * deltaTime;
     }
 
-    private static float3 CalculateVelocity(float3 displacement, float deltaTime)
+    public static float3 CalculateVelocity(float3 displacement, float deltaTime)
     {
         // v = d/t
         return displacement / deltaTime;
     }
 
-    private static void DistanceConstraintPBD(
+    public static void DistanceConstraintPBD(
         ref float3 position0, float invMass0,
         ref float3 position1, float invMass1,
         float distance, float strength
