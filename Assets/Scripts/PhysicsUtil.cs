@@ -39,6 +39,18 @@ public static class PhysicsUtil
         velocity = displacement / deltaTime;
     }
 
+    public static void VelocityDamping(ref float3 velocity, float invMass, float damping, float deltaTime)
+    {
+        velocity -= velocity * math.min(1.0f, damping * deltaTime * invMass);
+    }
+
+    public static void CalculateDisplacement(ref float3 position, float3 velocity, float deltaTime)
+    {
+        // v = d/t
+        // d = v*t
+        position += velocity * deltaTime;
+    }
+
     public static void DistanceConstraintPBD(
         ref float3 position0, float invMass0,
         ref float3 position1, float invMass1,
@@ -68,5 +80,36 @@ public static class PhysicsUtil
         // Infinite mass can be denoted using 0 as the invMass
         position0 += strength * direction * distanceCorrection * invMass0 / invMassSum;
         position1 -= strength * direction * distanceCorrection * invMass1 / invMassSum;
+    }
+
+    public static void DistanceConstraintSpring(
+        ref float3 force0, float3 position0, float invMass0,
+        ref float3 force1, float3 position1, float invMass1,
+        float distance, float springK
+    )
+    {
+        // Calculate the difference vector
+        float3 difference = position1 - position0;
+        // Calculate the magnitude of the difference vector
+        float magnitude = math.length(difference);
+
+        // Distance between positions are too small, we risk dividing by zero
+        if (magnitude <= math.EPSILON)
+        {
+            return;
+        }
+
+        // Normalize difference to get direction
+        float3 direction = difference / magnitude;
+
+        float invMassSum = invMass0 + invMass1;
+        // The difference between the actual distance and the desired distance (the x in the equation)
+        float distanceCorrection = magnitude - distance;
+
+        // F = kx
+        float3 totalForce = springK * distanceCorrection * direction;
+
+        force0 += totalForce * invMass0 / invMassSum;
+        force1 -= totalForce * invMass1 / invMassSum;
     }
 }

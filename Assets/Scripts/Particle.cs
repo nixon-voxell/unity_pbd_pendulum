@@ -11,6 +11,7 @@ public class Particle : MonoBehaviour
     {
         this.ParticleData.Position = this.transform.position;
         this.ParticleData.PredPosition = this.transform.position;
+        this.ParticleData.Force = float3.zero;
         this.ParticleData.Velocity = float3.zero;
     }
 
