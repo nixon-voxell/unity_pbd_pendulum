@@ -83,8 +83,8 @@ public static class PhysicsUtil
     }
 
     public static void DistanceConstraintSpring(
-        ref float3 force0, float3 position0, float invMass0,
-        ref float3 force1, float3 position1, float invMass1,
+        ref float3 force0, float3 position0,
+        ref float3 force1, float3 position1,
         float distance, float springK
     )
     {
@@ -102,14 +102,13 @@ public static class PhysicsUtil
         // Normalize difference to get direction
         float3 direction = difference / magnitude;
 
-        float invMassSum = invMass0 + invMass1;
         // The difference between the actual distance and the desired distance (the x in the equation)
         float distanceCorrection = magnitude - distance;
 
         // F = kx
         float3 totalForce = springK * distanceCorrection * direction;
 
-        force0 += totalForce * invMass0 / invMassSum;
-        force1 -= totalForce * invMass1 / invMassSum;
+        force0 += totalForce;
+        force1 -= totalForce;
     }
 }

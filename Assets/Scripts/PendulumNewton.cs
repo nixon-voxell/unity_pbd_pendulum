@@ -53,12 +53,10 @@ public class PendulumNewton : MonoBehaviour
                 // Particle 0
                 ref particleData0.Force,
                 particleData0.PredPosition,
-                particleData0.InvMass,
 
                 // Particle 1
                 ref particleData1.Force,
                 particleData1.PredPosition,
-                particleData1.InvMass,
 
                 this.m_Distance, this.m_SpringK
             );
@@ -86,8 +84,6 @@ public class PendulumNewton : MonoBehaviour
                 this.m_Damping,
                 deltaTime
             );
-
-            PhysicsUtil.ApplyVelocity(ref particleData.PredPosition, particleData.Velocity, deltaTime);
 
             // Update current particle position to the predicted position
             particleData.Position = particleData.PredPosition;

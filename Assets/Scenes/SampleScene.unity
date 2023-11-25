@@ -668,9 +668,9 @@ GameObject:
   - component: {fileID: 1979637361}
   - component: {fileID: 1979637364}
   - component: {fileID: 1979637363}
+  - component: {fileID: 1979637366}
   - component: {fileID: 1979637362}
   - component: {fileID: 1979637365}
-  - component: {fileID: 1979637366}
   m_Layer: 0
   m_Name: PendulumAnchor
   m_TagString: Untagged
@@ -700,7 +700,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979637360}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 938803ae1716bc543aad0a181fca4e3d, type: 3}
   m_Name: 
@@ -805,7 +805,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979637360}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9efef1e1b844a1a41bf7e0e513f6c5e0, type: 3}
   m_Name: 
